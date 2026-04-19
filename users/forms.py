@@ -1,5 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
+
 
 class RegisterForm(forms.Form):
     first_name = forms.CharField(max_length=150)
@@ -63,3 +65,27 @@ class RegisterModelForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+    
+
+class LoginForm(forms.Form):
+    username = forms.CharField(max_length=150)
+    password = forms.CharField(max_length=128)
+
+
+    def get_user(self):
+        return self.user
+
+
+    def clean(self):
+        cleaned_data =  super().clean()
+        username = cleaned_data.get('username')
+        password = cleaned_data.get('password')
+        
+        if username and password:
+            user = authenticate(username=username, password=password)
+            if user is None:
+                raise forms.ValidationError(
+                    'Username or password is incorrect.'
+                )
+            self.user = user
+        return cleaned_data
