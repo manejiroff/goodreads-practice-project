@@ -9,6 +9,7 @@
     
 <form action="" method="POST">
     {% csrf_token %}
+    <!-- {{ form.as_p }} -->
     <input type="text" name="first_name" placeholder="First name" required /><br><br>
     <input type="text" name="last_name" placeholder="Last name" required /><br><br>
     <input type="text" name="username" placeholder="Username" required /><br><br>
