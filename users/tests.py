@@ -135,4 +135,22 @@ class LoginUserTestCase(TestCase):
         
         self.assertFalse(user.is_authenticated)
 
+class LogoutUserTestCase(TestCase):
+    def test_logout_success(self):
+        db_user = User.objects.create_user(username='manejiroff')
+        db_user.set_password(raw_password='somepass')
+        db_user.save()
+
+        self.client.post(
+            reverse('users:login'),
+            data={
+                'username': 'manejiroff',
+                'password': 'somepass'
+            }
+        )
+
+        response = self.client.get(reverse('users:logout'))
         
+        self.assertNotIn('_auth_user_id', self.client.session)
+        self.assertRedirects(response, reverse('main:index'))
+
